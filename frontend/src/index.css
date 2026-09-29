@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+/*
+ * "Aether" theme tokens — every page reads these via Tailwind utilities
+ * (bg-theme-surface, text-theme-text, ...) or via the matching JS constants
+ * in src/lib/theme.ts (they resolve to the same CSS variables), so switching
+ * the `.light`/`.dark` class on <html> re-themes the whole app at once.
+ */
+@theme {
+  --color-theme-bg: #030705;
+  --color-theme-surface: #18181b;
+  --color-theme-surface-2: #121214;
+  --color-theme-border: #27272a;
+  --color-theme-text: #ffffff;
+  --color-theme-text-secondary: #a1a1aa;
+  --color-theme-hover: rgb(255 255 255 / 0.03);
+  --color-theme-input: rgb(255 255 255 / 0.05);
+  --color-theme-overlay: rgb(0 0 0 / 0.7);
+  --color-theme-accent: #10b981;
+}
+
+.dark {
+  --color-theme-bg: #030705;
+  --color-theme-surface: #18181b;
+  --color-theme-surface-2: #121214;
+  --color-theme-border: #27272a;
+  --color-theme-text: #ffffff;
+  --color-theme-text-secondary: #a1a1aa;
+  --color-theme-hover: rgb(255 255 255 / 0.03);
+  --color-theme-input: rgb(255 255 255 / 0.05);
+  --color-theme-overlay: rgb(0 0 0 / 0.7);
+  --color-theme-accent: #10b981;
+}
+
+.light {
+  --color-theme-bg: #f6f7f6;
+  --color-theme-surface: #ffffff;
+  --color-theme-surface-2: #f0f2f1;
+  --color-theme-border: #e2e5e3;
+  --color-theme-text: #111827;
+  --color-theme-text-secondary: #6b7280;
+  --color-theme-hover: rgb(0 0 0 / 0.03);
+  --color-theme-input: #f3f4f4;
+  --color-theme-overlay: rgb(0 0 0 / 0.5);
+  --color-theme-accent: #10b981;
+}
+
+@layer base {
+  html,
+  body {
+    background-color: var(--color-theme-bg);
+    color: var(--color-theme-text);
+    font-family: 'Inter', sans-serif;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+}

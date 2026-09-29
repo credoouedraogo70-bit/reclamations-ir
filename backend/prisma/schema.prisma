@@ -1,0 +1,118 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id              Int      @id @default(autoincrement())
+  nom             String
+  email           String   @unique
+  mot_de_passe_hash String
+  role            String   @default("AGENT")
+  statut          Boolean  @default(true) // true = active, false = inactive
+  created_at      DateTime @default(now())
+
+  reset_token         String?   @unique
+  reset_token_expires DateTime?
+
+  complaintsAssigned Complaint[] @relation("AssignedComplaints")
+  comments         Comment[]
+  statusHistories  StatusHistory[]
+  notifications    Notification[]
+}
+
+model Category {
+  id               Int      @id @default(autoincrement())
+  libelle          String
+  sla_delai_heures Int
+  
+  complaints       Complaint[]
+}
+
+model Complaint {
+  id                 Int      @id @default(autoincrement())
+  numero_ticket      String   @unique
+  client_nom         String
+  client_telephone   String
+  client_email       String?
+  canal_origine      String
+  
+  categorie_id       Int
+  category           Category @relation(fields: [categorie_id], references: [id])
+  
+  description        String
+  priorite           String   @default("MEDIUM")
+  statut             String   @default("NEW")
+  
+  agent_assigne_id   Int?
+  agentAssigned      User?    @relation("AssignedComplaints", fields: [agent_assigne_id], references: [id])
+  
+  sla_date_limite    DateTime?
+
+  satisfaction_note         Int?
+  satisfaction_commentaire  String?
+  satisfaction_date         DateTime?
+
+  created_at         DateTime @default(now())
+  updated_at         DateTime @updatedAt
+
+  comments           Comment[]
+  attachments        Attachment[]
+  statusHistories    StatusHistory[]
+}
+
+model Comment {
+  id              Int      @id @default(autoincrement())
+  reclamation_id  Int
+  complaint       Complaint @relation(fields: [reclamation_id], references: [id])
+  
+  user_id         Int
+  user            User     @relation(fields: [user_id], references: [id])
+  
+  contenu         String
+  created_at      DateTime @default(now())
+}
+
+model Attachment {
+  id              Int      @id @default(autoincrement())
+  reclamation_id  Int
+  complaint       Complaint @relation(fields: [reclamation_id], references: [id])
+  
+  nom_fichier     String
+  url             String
+  uploaded_at     DateTime @default(now())
+}
+
+model StatusHistory {
+  id              Int      @id @default(autoincrement())
+  reclamation_id  Int
+  complaint       Complaint @relation(fields: [reclamation_id], references: [id])
+  
+  ancien_statut   String
+  nouveau_statut  String
+  
+  user_id         Int
+  user            User     @relation(fields: [user_id], references: [id])
+  
+  date_changement DateTime @default(now())
+}
+
+/** Singleton row (id always 1) holding app-wide configuration editable from the admin Settings page. */
+model AppSettings {
+  id                Int @id @default(1)
+  default_sla_hours Int @default(48)
+}
+
+model Notification {
+  id              Int      @id @default(autoincrement())
+  user_id         Int
+  user            User     @relation(fields: [user_id], references: [id])
+  
+  message         String
+  lu              Boolean  @default(false)
+  created_at      DateTime @default(now())
+}
