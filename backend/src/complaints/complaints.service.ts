@@ -31,11 +31,6 @@ export class ComplaintsService {
     return `TICK-${random}`;
   }
 
-  /**
-   * Self-service creation from the public submission form — channel and priority are
-   * always server-assigned (never client-supplied) to keep the public endpoint from
-   * being used to fabricate arbitrary priority levels or origin channels.
-   */
   async createPublic(data: PublicCreateComplaintDto) {
     const category = await this.prisma.category.findUnique({ where: { id: data.categorie_id } });
     if (!category) throw new NotFoundException('Catégorie introuvable.');
@@ -78,7 +73,6 @@ export class ComplaintsService {
       ...(query.categorie_id ? { categorie_id: query.categorie_id } : {}),
       ...(query.agent_assigne_id ? { agent_assigne_id: query.agent_assigne_id } : {}),
       ...(query.priorite ? { priorite: query.priorite } : {}),
-      // Mirrors the dashboard's "SLA en retard" definition: still open, past its deadline.
       ...(query.sla_breached
         ? { statut: { not: 'RESOLVED' }, sla_date_limite: { lt: new Date() } }
         : {}),
@@ -109,7 +103,6 @@ export class ComplaintsService {
     };
   }
 
-  /** Unpaginated, unfiltered list — used for the CSV export which always dumps the full dataset. */
   async findAllForExport() {
     const complaints = await this.prisma.complaint.findMany({
       include: {
@@ -193,12 +186,6 @@ export class ComplaintsService {
     });
   }
 
-  /**
-   * Public, unauthenticated lookup for a client checking their own ticket.
-   * Requires the ticket number AND the phone number to match, and returns
-   * the same "not found" error either way so a wrong phone number can't be
-   * used to fish for whether a given ticket number exists.
-   */
   async trackByTicketAndPhone(ticket: string, telephone: string) {
     const complaint = await this.prisma.complaint.findUnique({
       where: { numero_ticket: ticket },
@@ -227,12 +214,6 @@ export class ComplaintsService {
     };
   }
 
-  /**
-   * Public, unauthenticated submission — reuses the same ticket+phone check as
-   * trackByTicketAndPhone. Only allowed once per complaint, and only once it's
-   * actually resolved, so a client can't rate a still-open ticket or overwrite
-   * a rating they already left.
-   */
   async rateComplaint(ticket: string, telephone: string, note: number, commentaire?: string) {
     const complaint = await this.prisma.complaint.findUnique({ where: { numero_ticket: ticket } });
 
@@ -309,7 +290,6 @@ export class ComplaintsService {
 
     await this.prisma.attachment.delete({ where: { id: attachmentId } });
 
-    // Best-effort: the DB row is the source of truth, so a missing/already-gone file shouldn't fail the request.
     const filePath = join(process.cwd(), 'uploads', basename(attachment.url));
     await unlink(filePath).catch(() => undefined);
 

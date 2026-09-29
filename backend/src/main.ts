@@ -5,11 +5,6 @@ import type { ValidationError } from 'class-validator';
 import { join } from 'path';
 import { AppModule } from './app.module';
 
-/**
- * All our own DTOs carry French `message` options, but class-validator's
- * built-in whitelist check ("property X should not exist") has no such hook —
- * translate that one pattern here so no English ever reaches the client.
- */
 function collectValidationMessages(errors: ValidationError[]): string[] {
   const messages: string[] = [];
   for (const error of errors) {

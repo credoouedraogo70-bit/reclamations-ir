@@ -179,10 +179,6 @@ export class ComplaintsController {
   }
 }
 
-/**
- * Deliberately outside the JwtAuthGuard applied to ComplaintsController above —
- * this is the public, unauthenticated "track my complaint" lookup for clients.
- */
 @Controller('track')
 export class TrackingController {
   constructor(private readonly complaintsService: ComplaintsService) {}
@@ -198,11 +194,6 @@ export class TrackingController {
   }
 }
 
-/**
- * Deliberately outside the JwtAuthGuard applied to ComplaintsController above —
- * lets a client submit a new complaint themselves, without an agent's involvement.
- * Channel and priority are always server-assigned (see ComplaintsService.createPublic).
- */
 @Controller('complaints/public')
 export class ComplaintsPublicController {
   constructor(

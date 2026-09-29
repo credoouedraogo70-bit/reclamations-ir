@@ -6,10 +6,6 @@ export interface SlaAwareComplaint {
   updated_at: Date;
 }
 
-/**
- * SLA status is time-dependent, so it's derived on read rather than stored:
- * a row written as ON_TRACK would silently go stale the moment the deadline passes.
- */
 export function computeSlaStatus(complaint: SlaAwareComplaint, now: Date = new Date()): string | null {
   if (!complaint.sla_date_limite) return null;
 

@@ -38,12 +38,6 @@ export class AuthService {
     };
   }
 
-  /**
-   * Always responds the same way whether or not the email exists (or belongs to an
-   * agent) — self-service reset is admin-only by policy, but that restriction stays
-   * invisible to the caller so this endpoint can't be used to fish for which
-   * addresses have an account, or for which ones are admins.
-   */
   async forgotPassword(email: string) {
     const existing = await this.usersService.findOne(email);
 

@@ -18,11 +18,7 @@ export class JwtAuthGuard implements CanActivate {
       throw new UnauthorizedException();
     }
     try {
-      // JwtService was configured with JWT_SECRET (from .env) in AuthModule,
-      // so no need to pass the secret again here.
       const payload = await this.jwtService.verifyAsync(token);
-      // 💡 We're assigning the payload to the request object here
-      // so that we can access it in our route handlers
       request['user'] = payload;
     } catch {
       throw new UnauthorizedException();

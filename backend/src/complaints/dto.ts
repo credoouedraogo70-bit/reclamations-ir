@@ -39,7 +39,6 @@ export class CreateComplaintDto {
   priorite?: string;
 }
 
-/** Fields a client submits themselves via the public self-service form — no ticket number, channel, or priority (server-assigned). */
 export class PublicCreateComplaintDto {
   @IsString({ message: 'Le nom du client doit être une chaîne de caractères.' })
   @MinLength(1, { message: 'Le nom du client est requis.' })
@@ -151,7 +150,6 @@ export class ListComplaintsQueryDto {
   @IsIn(PRIORITIES, { message: PRIORITY_MESSAGE })
   priorite?: string;
 
-  /** Set from the dashboard's "SLA en retard" KPI card — open complaints past their SLA deadline. */
   @IsOptional()
   @Transform(({ value }) => value === 'true' || value === true)
   @IsBoolean({ message: 'Le filtre SLA en retard est invalide.' })

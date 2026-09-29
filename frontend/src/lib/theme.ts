@@ -1,7 +1,5 @@
 import type { CSSProperties } from 'react';
 
-// Every value below is a CSS variable defined in index.css under `.dark`/`.light` —
-// switching the class on <html> re-themes every page that uses these constants.
 export const ACCENT = 'var(--color-theme-accent)';
 export const BACKGROUND = 'var(--color-theme-bg)';
 export const SURFACE = 'var(--color-theme-surface)';

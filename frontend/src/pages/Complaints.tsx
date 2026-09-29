@@ -35,7 +35,6 @@ export default function Complaints() {
   const [totalPages, setTotalPages] = useState(1);
   const [formData, setFormData] = useState({ client_nom: '', client_telephone: '', client_email: '', canal_origine: 'Agence', categorie_id: '', description: '', priorite: 'MEDIUM' });
 
-  // Debounce free-text search so we don't hit the API on every keystroke.
   useEffect(() => {
     const timeout = setTimeout(() => {
       setDebouncedSearch(search.trim());
@@ -44,9 +43,6 @@ export default function Complaints() {
     return () => clearTimeout(timeout);
   }, [search]);
 
-  // Re-sync filters from the URL on every navigation, not just first mount — the sidebar's
-  // "Réclamations" and "Mes réclamations" links both point at this same mounted component,
-  // so a plain useState initializer would never pick up the query string on the second visit.
   const searchParamsKey = searchParams.toString();
   useEffect(() => {
     setStatusFilter(searchParams.get('statut') ?? '');

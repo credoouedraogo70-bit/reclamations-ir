@@ -11,7 +11,6 @@ export class SettingsService {
     private mailService: MailService,
   ) {}
 
-  /** Lazily creates the singleton row on first read — avoids a seed-script dependency for a single default row. */
   private async getOrCreate() {
     return this.prisma.appSettings.upsert({
       where: { id: SETTINGS_ID },

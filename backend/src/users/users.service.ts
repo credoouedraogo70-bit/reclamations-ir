@@ -40,12 +40,6 @@ export class UsersService {
     }
   }
 
-  /**
-   * When called without `page` (e.g. the agent-assignment dropdown, which needs
-   * every user), returns the full list as a plain array — unchanged from before
-   * pagination was added, so existing callers keep working.
-   * When `page` is passed (the user-management screen), returns a paginated envelope.
-   */
   async findAll(query: ListUsersQueryDto = {}) {
     const where: Prisma.UserWhereInput = query.search
       ? { OR: [{ nom: { contains: query.search } }, { email: { contains: query.search } }] }

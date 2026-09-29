@@ -15,12 +15,6 @@ const DAY_MS = 24 * 60 * 60 * 1000;
 export class StatisticsService {
   constructor(private prisma: PrismaService) {}
 
-  /**
-   * `days` only scopes the two time-series figures (resolved-in-period, the daily
-   * chart) — total/in-progress/SLA-breached stay all-time "current state" numbers
-   * so their KPI-card deep links into Complaints keep showing the full, unfiltered
-   * matching set regardless of which chart window is selected.
-   */
   async getDashboard(days = 7) {
     const complaints = await this.prisma.complaint.findMany({
       include: { category: true },
@@ -121,13 +115,6 @@ export class StatisticsService {
     });
   }
 
-  /**
-   * Cross-system feed for admin oversight. Combines the two kinds of events we
-   * actually keep a timestamped record of — status changes are the only complaint
-   * lifecycle event with its own history table; assignments only exist today as
-   * a notification message, not a queryable event, so they're left out rather
-   * than guessed at by pattern-matching notification text.
-   */
   async getActivityLog(limit = 50) {
     const [statusChanges, newUsers] = await Promise.all([
       this.prisma.statusHistory.findMany({
